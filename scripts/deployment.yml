@@ -3,34 +3,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: book_catalog
+  name: book-catalog-deployment
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      app: book_catalog
+      app: book-catalog
   template:
     metadata:
       labels:
-        app: book_catalog
+        app: book-catalog
     spec:
-      containers: 
-      - name: book_catalog
-        image: rauansit722.azurecr.io/book_catalog:1
-        imagePullPolicy: IfNotPresent
+      containers:
+      - name: book-catalog
+        image: book-catalog-microservice:local
+        ports:
+        - containerPort: 5000
         env:
-        - name: PORT
-          value: "4000"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: book_catalog
-spec:
-  selector:
-    app: book_catalog
-  type: LoadBalancer
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 4000
+        - name: DATABASE_URL
+          value: "postgresql://rauan_sit722_unillibrary_user:1TCilpWHcagmDQAlW8d4j4XG4zXCajuy@dpg-cr85k03qf0us73bq5n80-a/rauan_sit722_unillibrary"
