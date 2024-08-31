@@ -1,11 +1,10 @@
 # Write Kubernetes Deployment Script
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: book-catalog-deployment
+  name: book-catalog
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: book-catalog
@@ -16,9 +15,9 @@ spec:
     spec:
       containers:
       - name: book-catalog
-        image: book-catalog-microservice:local
+        image: <your-docker-image>
         ports:
-        - containerPort: 5000
+        - containerPort: 80
         env:
         - name: DATABASE_URL
           value: "postgresql://rauan_sit722_unillibrary_user:1TCilpWHcagmDQAlW8d4j4XG4zXCajuy@dpg-cr85k03qf0us73bq5n80-a/rauan_sit722_unillibrary"
