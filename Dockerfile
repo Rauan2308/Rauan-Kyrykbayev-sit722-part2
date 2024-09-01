@@ -1,27 +1,22 @@
 # Dockerfile for book_catalog microservice
-# Use a Python base image
-FROM python:3.10-slim
 
-# Set the working directory
+# Use a Python base image
+FROM python:3.12-slim
+
+# Set the working directory in the container
 WORKDIR /app
 
 # Copy the requirements file into the container
 COPY requirements.txt .
 
-# Install any needed packages specified in requirements.txt
+# Install any dependencies specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Install python-dotenv for loading .env file
-RUN pip install python-dotenv
-
-# Copy the rest of the application code into the container
+# Copy the current directory contents into the container at /app
 COPY . .
-
-# Copy the .env file into the container
-COPY .env .
 
 # Make port 80 available to the world outside this container
 EXPOSE 80
 
-# Run main.py when the container launches
-CMD ["python", "main.py"]
+# Run app.py when the container launches
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]

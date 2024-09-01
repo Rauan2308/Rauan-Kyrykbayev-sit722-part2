@@ -1,23 +1,37 @@
 # Write Kubernetes Deployment Script
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: apps/v1  # Specifies the API version for the Deployment resource.
+kind: Deployment  # Defines the type of resource as a Deployment, which manages the deployment of applications.
 metadata:
-  name: book-catalog
+  name: book-catalog  # The name of the Deployment.
 spec:
-  replicas: 1
+  replicas: 1  # Number of pod replicas to run.
   selector:
     matchLabels:
-      app: book-catalog
+      app: book-catalog  # Selector to match pods with the label 'app: book-catalog'.
   template:
     metadata:
       labels:
-        app: book-catalog
+        app: book-catalog  # Labels applied to the pods created by this Deployment. These must match the selector.
     spec:
       containers:
-      - name: book-catalog
-        image: <your-docker-image>
+      - name: book-catalog  # The name of the container within the pod.
+        image: book-catalog-microservice:local  # Docker image to use for the container. 'local' is a tag for the image.
         ports:
-        - containerPort: 80
+        - containerPort: 80  # Port that the container exposes. The container listens on port 80.
         env:
-        - name: DATABASE_URL
-          value: "postgresql://rauan_sit722_unillibrary_user:1TCilpWHcagmDQAlW8d4j4XG4zXCajuy@dpg-cr85k03qf0us73bq5n80-a/rauan_sit722_unillibrary"
+        - name: DATABASE_URL  # Environment variable name used in the container.
+          value: "postgresql://rauan_sit722_unillibrary_user:1TCilpWHcagmDQAlW8d4j4XG4zXCajuy@dpg-cr85k03qf0us73bq5n80-a.oregon-postgres.render.com/rauan_sit722_unillibrary"  
+          # Value of the environment variable, used for connecting to the PostgreSQL database.
+---
+apiVersion: v1  # Specifies the API version for the Service resource.
+kind: Service  # Defines the type of resource as a Service, which provides access to the application running in the pods.
+metadata:
+  name: book-catalog-service  # The name of the Service. This must be unique within the namespace.
+spec:
+  selector:
+    app: book-catalog  # Selector to match pods with the label 'app: book-catalog'. This tells the Service which pods to route traffic to.
+  type: NodePort  # Type of Service. 'NodePort' exposes the Service on a static port on each node in the cluster, making it accessible externally.
+  ports:
+  - protocol: TCP  # Protocol used by the Service. 'TCP' is used for network communication.
+    port: 80  # Port on which the Service is exposed within the cluster.
+    targetPort: 80  # Port on the container to which traffic will be forwarded. The Service forwards traffic to port 80 on the container.
